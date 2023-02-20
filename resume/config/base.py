@@ -33,7 +33,8 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 LOCAL_APPS = [
-    "apps.users"
+    "apps.users",
+    "apps.locations"
 ]
 
 THIRD_APPS = [
