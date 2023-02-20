@@ -1,8 +1,8 @@
-from django.db import models
-
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.models import AbstractUser
+
+from apps.locations.models import District
 
 
 class Profile(models.Model):
@@ -19,6 +19,8 @@ class Profile(models.Model):
     email = models.EmailField(null=False, blank=False, verbose_name=_("Email"))
     address = models.TextField(
         null=False, blank=False, verbose_name=_("Dirección"))
+    district = models.ForeignKey(
+        District, on_delete=models.CASCADE, null=False, blank=False, verbose_name=_("Distrito"))
     country = models.CharField(
         max_length=50, null=False, blank=False, verbose_name=_("País"))
     linkedin = models.URLField(
