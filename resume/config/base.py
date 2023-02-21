@@ -37,6 +37,7 @@ LOCAL_APPS = [
     "apps.locations",
     "apps.skills",
     "apps.careers",
+    "apps.languages",
 ]
 
 THIRD_APPS = [
