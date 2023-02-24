@@ -51,7 +51,7 @@ class Certificate(models.Model):
         null=False, blank=False, verbose_name=_("Fecha de inicio"))
     end_date = models.DateField(
         null=False, blank=False, verbose_name=_("Fecha de fin"))
-    file = models.FileField(
+    image = models.ImageField(
         upload_to="certificates/", null=False, blank=False, verbose_name=_("Certificados"))
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, null=False, blank=False, verbose_name=_("Usuario"))
