@@ -1,30 +1,31 @@
 from .base import *
-from decouple import config
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 DEBUG = True
 
 DATABASES = {
-    'default': {
-        'ENGINE': config('DB_ENGINE'),
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': config('DB_PORT'),
+    "default": {
+        "ENGINE": os.environ.get("DB_ENGINE"),
+        "NAME": os.environ.get("DB_NAME"),
+        "USER": os.environ.get("DB_USER"),
+        "PASSWORD": os.environ.get("DB_PASSWORD"),
+        "HOST": "localhost",
+        "PORT": os.environ.get("DB_PORT"),
     }
 }
 
-INSTALLED_APPS += ['debug_toolbar']
+INSTALLED_APPS += ["debug_toolbar"]
 
-MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
+MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 
 DEBUG_TOOLBAR_CONFIG = {
-    'DISABLE_PANELS': [
-        'debug_toolbar.panels.redirects.RedirectsPanel',
+    "DISABLE_PANELS": [
+        "debug_toolbar.panels.redirects.RedirectsPanel",
     ],
-    'SHOW_TEMPLATE_CONTEXT': True,
+    "SHOW_TEMPLATE_CONTEXT": True,
 }
 
-INTERNAL_IPS = ['127.0.0.1', ]
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
