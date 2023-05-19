@@ -3,11 +3,15 @@
 import os
 import sys
 from django.core.management import execute_from_command_line
+from dotenv import load_dotenv
 
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'resume.config.dev')
+    ROOT_DIR = os.path.dirname(__file__)
+    env_path = os.path.join(ROOT_DIR, ".env")
+    load_dotenv(env_path)
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "resume.config.dev")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -19,5 +23,5 @@ def main():
     execute_from_command_line(sys.argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

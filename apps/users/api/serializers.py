@@ -2,28 +2,73 @@ from rest_framework import serializers
 from apps.users.models import User, Profile
 from apps.skills.api.serializers import SkillSerializer
 from apps.languages.api.serializers import LanguageSkillSerializer
-from apps.careers.api.serializers import JobExperienceSerializer, EducationSerializer, CertificateSerializer
+from apps.careers.api.serializers import (
+    JobExperienceSerializer,
+    EducationSerializer,
+    CertificateSerializer,
+)
+import os
+from datetime import date
+from apps.careers.api.serializers import EducationSerializer
+from apps.languages.api.serializers import LanguageSkillSerializer
+from utils.images import get_sas
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Profile
         fields = "__all__"
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        today = date.today()
+        birth_year = instance.birth_date.year
+        birth_month = instance.birth_date.month
+        birth_day = instance.birth_date.day
+        data["district"] = instance.district.name
+        data["province"] = instance.district.province.name
+        data["department"] = instance.district.province.department.name
+        data["age"] = (
+            today.year
+            - birth_year
+            - ((today.month, today.day) < (birth_month, birth_day))
+        )
+        data["photo"] = get_sas(instance.photo.name)
+        return data
 
-class UserSerializer(serializers.ModelSerializer):
+    # def to_representation(self, instance):
+    #     data= super().to_representation(instance)
+    #     return data
+
+
+class WelcomeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "first_name",
+            "last_name",
+        ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["description"] = instance.profile.description
+        data["short_description"] = instance.profile.short_description
+        data["whatsapp"] = instance.profile.whatsapp
+        data["github"] = instance.profile.github
+        data["linkedin"] = instance.profile.linkedin
+        return data
+
+
+class AboutMeSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()
-    skills = SkillSerializer(source='skill_set', many=True)
-    languages = LanguageSkillSerializer(source='languageskill_set', many=True)
-    job_experience = JobExperienceSerializer(
-        source='jobexperience_set', many=True)
-    education = EducationSerializer(
-        source='education_set', many=True)
-    certifications = CertificateSerializer(
-        source='certificate_set', many=True)
+    education = EducationSerializer(many=True, source="education_set")
+    idioms = LanguageSkillSerializer(many=True, source="languageskill_set")
 
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "profile",
-                  "skills", "languages", "job_experience", "education", "certifications"]
+        fields = ["first_name", "last_name", "profile", "education", "idioms"]
+
+
+class MailSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    message = serializers.CharField(required=True)

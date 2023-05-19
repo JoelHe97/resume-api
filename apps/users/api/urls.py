@@ -1,10 +1,20 @@
 from django.urls import path, include
-from .views import ProfileView
+from .views import (
+    WelcomeView,
+    AboutMeView,
+    SkillView,
+    JobExperiencesView,
+    CertificatesView,
+    SendMailView,
+    AzureBlobView,
+)
 
-app_name = "users"
 urlpatterns = [
-
-    path('<int:pk>/', ProfileView.as_view()),
-
-
+    path("welcome/<str:username>/", WelcomeView.as_view()),
+    path("about-me/<str:username>/", AboutMeView.as_view()),
+    path("skills/<str:username>/", SkillView.as_view()),
+    path("job-experience/<str:username>/", JobExperiencesView.as_view()),
+    path("certificates/<str:username>/", CertificatesView.as_view()),
+    path("send-mail/", SendMailView.as_view()),
+    path("azure-blob/", AzureBlobView.as_view()),
 ]

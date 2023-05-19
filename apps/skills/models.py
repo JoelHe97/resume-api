@@ -6,7 +6,8 @@ from apps.users.models import User
 class Stack(models.Model):
     name = models.CharField(max_length=50, verbose_name=_("Nombre"))
     icon = models.ImageField(
-        upload_to="icon", null=True, blank=True, verbose_name=_("Icono"))
+        upload_to="icon", null=True, blank=True, verbose_name=_("Icono")
+    )
 
     def __str__(self) -> str:
         return self.name
@@ -17,15 +18,18 @@ class Stack(models.Model):
 
 
 class Skill(models.Model):
-    stack = models.ForeignKey(Stack, on_delete=models.CASCADE,
-                              null=True, blank=True, verbose_name=_("Stack"))
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             null=True, blank=True, verbose_name=_("Usuario"))
+    stack = models.ForeignKey(
+        Stack, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_("Stack")
+    )
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_("Usuario")
+    )
     percent = models.IntegerField(
-        null=False, blank=False, verbose_name=_("POrcentaje de conocimiento"))
+        null=False, blank=False, verbose_name=_("POrcentaje de conocimiento")
+    )
 
     def __str__(self) -> str:
-        return f'{self.user}-{self.stack}'
+        return f"{self.user}-{self.stack}"
 
     class Meta:
         verbose_name = _("Habilidad")

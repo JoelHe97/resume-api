@@ -4,3 +4,4 @@ from apps.careers.models import *
 admin.site.register(Education)
 admin.site.register(JobExperience)
 admin.site.register(Certificate)
+admin.site.register(Tags)
