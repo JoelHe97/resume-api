@@ -2,7 +2,7 @@ from .base import *
 
 
 def get_CSRF_TRUSTED_ORIGINS():
-    CSRF_TRUSTED_ORIGINS_FROM_ENVIRON = os.environ.get("WEBSITE_HOSTNAME")
+    CSRF_TRUSTED_ORIGINS_FROM_ENVIRON = os.environ.get("ALLOWED_HOSTNAME")
     return [s.strip() for s in CSRF_TRUSTED_ORIGINS_FROM_ENVIRON.split(",")]
 
 
