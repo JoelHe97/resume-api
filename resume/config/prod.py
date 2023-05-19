@@ -1,7 +1,8 @@
 from .base import *
 
-ALLOWED_HOSTS = ["*"]
-print("afa")
+ALLOWED_HOSTS = (
+    [os.environ["WEBSITE_HOSTNAME"]] if "WEBSITE_HOSTNAME" in os.environ else []
+)
 DEBUG = False
 DATABASES = {
     "default": {
