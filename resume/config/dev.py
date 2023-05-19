@@ -17,17 +17,9 @@ DATABASES = {
         },
     }
 }
-print("aea")
 
 INSTALLED_APPS += ["debug_toolbar"]
-print(INSTALLED_APPS)
 
-# DEBUG_TOOLBAR_CONFIG = {
-#     "DISABLE_PANELS": [
-#         "debug_toolbar.panels.redirects.RedirectsPanel",
-#     ],
-#     "SHOW_TEMPLATE_CONTEXT": True,
-# }
 
 INTERNAL_IPS = [
     "127.0.0.1",

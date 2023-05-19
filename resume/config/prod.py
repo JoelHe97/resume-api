@@ -1,8 +1,14 @@
 from .base import *
 
-ALLOWED_HOSTS = (
-    [os.environ["WEBSITE_HOSTNAME"]] if "WEBSITE_HOSTNAME" in os.environ else []
-)
+
+def get_CSRF_TRUSTED_ORIGINS():
+    CSRF_TRUSTED_ORIGINS_FROM_ENVIRON = os.environ.get("WEBSITE_HOSTNAME")
+    return [s.strip() for s in CSRF_TRUSTED_ORIGINS_FROM_ENVIRON.split(",")]
+
+
+ALLOWED_HOSTS = get_CSRF_TRUSTED_ORIGINS()
+
+print(ALLOWED_HOSTS)
 DEBUG = False
 DATABASES = {
     "default": {
