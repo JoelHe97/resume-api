@@ -16,7 +16,7 @@ DATABASES = {
         "Trusted_Connection": "no",
         "OPTIONS": {
             "driver": "ODBC Driver 17 for SQL Server",
-            "extra_params": "Driver={ODBC Driver 17 for SQL Server};Server=tcp:joelhe.database.windows.net,1433;Database=resume-api;Uid={2016014076@unfv.edu.pe};Pwd={Huacre0123};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;Authentication=ActiveDirectoryPassword",
+            "extra_params": os.environ.get("DB_EXTRA_PARAMS"),
         },
     }
 }
