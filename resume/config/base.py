@@ -131,7 +131,6 @@ CKEDITOR_CONFIGS = {
 }
 # AWS_QUERYSTRING_AUTH = False
 X_FRAME_OPTIONS = "SAMEORIGIN"
-CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
@@ -184,8 +183,11 @@ EMAIL_USE_TLS = True
 DEFAULT_FILE_STORAGE = "storages.backends.azure_storage.AzureStorage"
 STATICFILES_STORAGE = "resume.storages.custom_azure.StaticStorage"
 
-
 AZURE_CONTAINER = os.environ.get("AZURE_CONTAINER")
 AZURE_ACCOUNT_KEY = os.environ.get("AZURE_ACCOUNT_KEY")
 AZURE_ACCOUNT_NAME = os.environ.get("AZURE_ACCOUNT_NAME")
 # AZURE_CUSTOM_DOMAIN = f'{"resumebucket2"}.blob.core.windows.net'
+
+CKEDITOR_BASEPATH = (
+    "https://" + AZURE_ACCOUNT_NAME + ".blob.core.windows.net/static/ckeditor/ckeditor/"
+)
