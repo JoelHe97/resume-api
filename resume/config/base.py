@@ -129,6 +129,9 @@ CKEDITOR_CONFIGS = {
         "width": 800,
     },
 }
+# AWS_QUERYSTRING_AUTH = False
+X_FRAME_OPTIONS = "SAMEORIGIN"
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
