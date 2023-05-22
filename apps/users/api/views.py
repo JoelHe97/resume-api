@@ -12,6 +12,7 @@ import os
 from django.db.models import Prefetch
 from apps.careers.models import Education
 from apps.languages.models import LanguageSkill
+from django.core.mail import send_mail
 
 
 class MainView(APIView):
@@ -70,6 +71,7 @@ from azure.communication.email import EmailClient
 
 class SendMailView(APIView):
     serializer_class = MailSerializer
+
     def post(self, request):
         serializer = MailSerializer(data=request.data)
 
@@ -89,6 +91,8 @@ class SendMailView(APIView):
             return Response({"mensaje": "Correo enviado correctamente"})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 #     def post(self, request):
 #         serializer = self.serializer_class(data=request.data)
 #         if serializer.is_valid():
