@@ -1,4 +1,4 @@
-from rest_framework import generics, views
+from rest_framework import generics
 from apps.users.models import User
 from apps.skills.models import Skill
 from apps.skills.api.serializers import SkillSerializer
@@ -7,18 +7,11 @@ from apps.careers.api.serializers import JobExperienceSerializer, CertificateSer
 from .serializers import WelcomeSerializer, AboutMeSerializer, MailSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.core.mail import send_mail
 from rest_framework import status
-from azure.storage.blob import BlobServiceClient
 import os
-from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
-from datetime import datetime, timedelta
 from django.db.models import Prefetch
 from apps.careers.models import Education
 from apps.languages.models import LanguageSkill
-import os
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
 
 
 class MainView(APIView):
