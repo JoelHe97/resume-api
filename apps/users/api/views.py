@@ -16,6 +16,9 @@ from datetime import datetime, timedelta
 from django.db.models import Prefetch
 from apps.careers.models import Education
 from apps.languages.models import LanguageSkill
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 
 class MainView(APIView):
@@ -69,41 +72,75 @@ class CertificatesView(generics.ListAPIView):
         return super().get_queryset().filter(user__username=self.kwargs["username"])
 
 
+from azure.communication.email import EmailClient
+
+
 class SendMailView(APIView):
     serializer_class = MailSerializer
 
     def post(self, request):
-        serializer = MailSerializer(data=request.data)
-
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            subject = "Contacto de mi Web"
+            POLLER_WAIT_TIME = 10
             email = request.data.get("email")
             message = f'{email} : {request.data.get("message")}'
+            try:
+                email_client = EmailClient.from_connection_string(
+                    os.environ.get("AZURE_EMAIL_CONNECTION")
+                )
+                message = {
+                    "content": {
+                        "subject": "Contacto de mi Web",
+                        "plainText": message,
+                        "html": f"<html><h1>{message}</h1></html>",
+                    },
+                    "recipients": {
+                        "to": [
+                            {
+                                "address": "huacreenciso97@gmail.com",
+                                "displayName": "Joel",
+                            }
+                        ]
+                    },
+                    "senderAddress": os.environ.get("AZURE_EMAIL_SENDER"),
+                }
+                poller = email_client.begin_send(message)
 
-            send_mail(
-                subject,
-                message,
-                email,
-                ["huacreenciso97@gmail.com"],
-                fail_silently=False,
-            )
+                time_elapsed = 0
+                while not poller.done():
+                    print("Email send poller status: " + poller.status())
+
+                    poller.wait(POLLER_WAIT_TIME)
+                    time_elapsed += POLLER_WAIT_TIME
+
+                    if time_elapsed > 18 * POLLER_WAIT_TIME:
+                        raise RuntimeError("Polling timed out.")
+
+                if poller.result()["status"] == "Succeeded":
+                    print(
+                        f"Successfully sent the email (operation id: {poller.result()['id']})"
+                    )
+                else:
+                    raise RuntimeError(str(poller.result()["error"]))
+
+            except Exception as ex:
+                return Response(
+                    {"detail": "ha ocurrido un error"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             return Response({"mensaje": "Correo enviado correctamente"})
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AzureBlobView(APIView):
     def post(self, request):
         data = request.data["name"]
-        AZURE_ACC_NAME = os.environ.get("AZURE_ACCOUNT_NAME")
-        AZURE_PRIMARY_KEY = os.environ.get("AZURE_ACCOUNT_KEY")
-        AZURE_CONTAINER = os.environ.get("AZURE_CONTAINER")
-        AZURE_BLOB = data
         from azure.storage.blob import BlobServiceClient
 
         blob_service_client = BlobServiceClient.from_connection_string(
-            "DefaultEndpointsProtocol=https;AccountName=resumebucket;AccountKey=61QyF+BPJXmiDKjP1IFAn8bCJSjcm5ndSnq9py9QMXX7HeoDo2KyLKd5Own2P/0ES5+iVWwI44DN+AStdHGFww==;EndpointSuffix=core.windows.net"
+            os.environ.get("AZURE_GENERATE_SAS")
         )
 
         # [START create_sas_token]
