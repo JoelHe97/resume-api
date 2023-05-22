@@ -70,61 +70,79 @@ from azure.communication.email import EmailClient
 
 class SendMailView(APIView):
     serializer_class = MailSerializer
-
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = MailSerializer(data=request.data)
+
         if serializer.is_valid():
-            POLLER_WAIT_TIME = 10
+            subject = "Contacto de mi Web"
             email = request.data.get("email")
             message = f'{email} : {request.data.get("message")}'
-            try:
-                email_client = EmailClient.from_connection_string(
-                    os.environ.get("AZURE_EMAIL_CONNECTION")
-                )
-                message = {
-                    "content": {
-                        "subject": "Contacto de mi Web",
-                        "plainText": message,
-                        "html": f"<html><h1>{message}</h1></html>",
-                    },
-                    "recipients": {
-                        "to": [
-                            {
-                                "address": "huacreenciso97@gmail.com",
-                                "displayName": "Joel",
-                            }
-                        ]
-                    },
-                    "senderAddress": os.environ.get("AZURE_EMAIL_SENDER"),
-                }
-                poller = email_client.begin_send(message)
 
-                time_elapsed = 0
-                while not poller.done():
-                    print("Email send poller status: " + poller.status())
-
-                    poller.wait(POLLER_WAIT_TIME)
-                    time_elapsed += POLLER_WAIT_TIME
-
-                    if time_elapsed > 18 * POLLER_WAIT_TIME:
-                        raise RuntimeError("Polling timed out.")
-
-                if poller.result()["status"] == "Succeeded":
-                    print(
-                        f"Successfully sent the email (operation id: {poller.result()['id']})"
-                    )
-                else:
-                    raise RuntimeError(str(poller.result()["error"]))
-
-            except Exception as ex:
-                return Response(
-                    {"detail": "ha ocurrido un error"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            send_mail(
+                subject,
+                message,
+                email,
+                ["huacreenciso97@gmail.com"],
+                fail_silently=False,
+            )
 
             return Response({"mensaje": "Correo enviado correctamente"})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def post(self, request):
+#         serializer = self.serializer_class(data=request.data)
+#         if serializer.is_valid():
+#             POLLER_WAIT_TIME = 10
+#             email = request.data.get("email")
+#             message = f'{email} : {request.data.get("message")}'
+#             try:
+#                 email_client = EmailClient.from_connection_string(
+#                     os.environ.get("AZURE_EMAIL_CONNECTION")
+#                 )
+#                 message = {
+#                     "content": {
+#                         "subject": "Contacto de mi Web",
+#                         "plainText": message,
+#                         "html": f"<html><h1>{message}</h1></html>",
+#                     },
+#                     "recipients": {
+#                         "to": [
+#                             {
+#                                 "address": "huacreenciso97@gmail.com",
+#                                 "displayName": "Joel",
+#                             }
+#                         ]
+#                     },
+#                     "senderAddress": os.environ.get("AZURE_EMAIL_SENDER"),
+#                 }
+#                 poller = email_client.begin_send(message)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#                 time_elapsed = 0
+#                 while not poller.done():
+#                     print("Email send poller status: " + poller.status())
+
+#                     poller.wait(POLLER_WAIT_TIME)
+#                     time_elapsed += POLLER_WAIT_TIME
+
+#                     if time_elapsed > 18 * POLLER_WAIT_TIME:
+#                         raise RuntimeError("Polling timed out.")
+
+#                 if poller.result()["status"] == "Succeeded":
+#                     print(
+#                         f"Successfully sent the email (operation id: {poller.result()['id']})"
+#                     )
+#                 else:
+#                     raise RuntimeError(str(poller.result()["error"]))
+
+#             except Exception as ex:
+#                 return Response(
+#                     {"detail": "ha ocurrido un error"},
+#                     status=status.HTTP_400_BAD_REQUEST,
+#                 )
+
+#             return Response({"mensaje": "Correo enviado correctamente"})
+
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AzureBlobView(APIView):
