@@ -51,7 +51,7 @@ class SkillView(generics.ListAPIView):
 
 
 class JobExperiencesView(generics.ListAPIView):
-    queryset = JobExperience.objects.all()
+    queryset = JobExperience.objects.order_by("start_date")
     serializer_class = JobExperienceSerializer
 
     def get_queryset(self):
