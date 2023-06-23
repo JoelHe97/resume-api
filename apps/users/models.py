@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.locations.models import District
 
+
 class User(AbstractUser):
     # profile = models.OneToOneField(
     #     Profile,
@@ -17,6 +18,7 @@ class User(AbstractUser):
     class Meta:
         verbose_name = _("Usuario")
         verbose_name_plural = _("Usuarios")
+
 
 class Profile(models.Model):
     description = models.CharField(
@@ -37,6 +39,7 @@ class Profile(models.Model):
     phone = models.CharField(
         max_length=9, null=False, blank=False, verbose_name=_("Celular")
     )
+    cv = models.FileField(null=True, blank=True, verbose_name=_("CV"))
     email = models.EmailField(null=False, blank=False, verbose_name=_("Email"))
     address = models.TextField(null=False, blank=False, verbose_name=_("Dirección"))
     district = models.ForeignKey(
@@ -60,6 +63,7 @@ class Profile(models.Model):
         verbose_name=_("Usuario"),
         db_index=True,  # Agregar índice al campo "user"
     )
+
     class Meta:
         verbose_name = _("Perfil")
         verbose_name_plural = _("Perfiles")
@@ -67,5 +71,3 @@ class Profile(models.Model):
     # def save(self, *args, **kwargs):
     #     self.short_description = self.short_description.encode("utf-8")
     #     return super(Profile, self).save(*args, **kwargs)  # Call the real save() method
-
-

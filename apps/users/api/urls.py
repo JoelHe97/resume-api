@@ -7,6 +7,7 @@ from .views import (
     CertificatesView,
     SendMailView,
     AzureBlobView,
+    ProjectsView,
 )
 
 urlpatterns = [
@@ -14,6 +15,7 @@ urlpatterns = [
     path("about-me/<str:username>/", AboutMeView.as_view()),
     path("skills/<str:username>/", SkillView.as_view()),
     path("job-experience/<str:username>/", JobExperiencesView.as_view()),
+    path("projects/<str:username>/", ProjectsView.as_view()),
     path("certificates/<str:username>/", CertificatesView.as_view()),
     path("send-mail/", SendMailView.as_view()),
     path("azure-blob/", AzureBlobView.as_view()),

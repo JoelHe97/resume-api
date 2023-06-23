@@ -44,17 +44,16 @@ class ProfileSerializer(serializers.ModelSerializer):
 class WelcomeSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = [
-            "first_name",
-            "last_name",
-        ]
+        fields = ["first_name", "last_name"]
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["description"] = instance.profile.description
+        data["cv"] = get_sas(instance.profile.cv.name) if instance.profile.cv else None
         data["short_description"] = instance.profile.short_description
         data["whatsapp"] = instance.profile.whatsapp
         data["github"] = instance.profile.github
+        data["linkedin"] = instance.profile.linkedin
         data["linkedin"] = instance.profile.linkedin
         return data
 

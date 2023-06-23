@@ -3,7 +3,14 @@ from apps.users.models import User
 from apps.skills.models import Skill
 from apps.skills.api.serializers import SkillSerializer
 from apps.careers.models import JobExperience, Certificate
-from apps.careers.api.serializers import JobExperienceSerializer, CertificateSerializer
+from apps.projects.models import Project
+from apps.careers.api.serializers import (
+    JobExperienceSerializer,
+    CertificateSerializer,
+)
+from apps.projects.api.serializers import (
+    ProjectSerializer,
+)
 from .serializers import WelcomeSerializer, AboutMeSerializer, MailSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -61,6 +68,14 @@ class JobExperiencesView(generics.ListAPIView):
 class CertificatesView(generics.ListAPIView):
     queryset = Certificate.objects.all()
     serializer_class = CertificateSerializer
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user__username=self.kwargs["username"])
+
+
+class ProjectsView(generics.ListAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
 
     def get_queryset(self):
         return super().get_queryset().filter(user__username=self.kwargs["username"])

@@ -40,6 +40,7 @@ LOCAL_APPS = [
     "apps.skills",
     "apps.careers",
     "apps.languages",
+    "apps.projects",
 ]
 
 THIRD_APPS = [

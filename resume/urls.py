@@ -17,11 +17,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from apps.users.api.views import MainView
+
 urlpatterns = [
-    path("",MainView.as_view()),
+    path("", MainView.as_view()),
     path("admin/", admin.site.urls),
     path("users/", include("apps.users.api.urls")),
     path("skills/", include("apps.skills.api.urls")),
+    path("projects/", include("apps.projects.api.urls")),
 ]
 
 if settings.DEBUG and "debug_toolbar" in settings.INSTALLED_APPS:
