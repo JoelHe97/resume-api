@@ -6,10 +6,5 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Artifact Cleanup
-        uses: resume-api/delete-artifacts-action@v2
-        with:
-          log level: "error"
-          min_bytes: '0'
+     -  name: Delete Artifact
+        uses: GeekyEggo/delete-artifact@v2.0.0
