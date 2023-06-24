@@ -11,7 +11,7 @@ class Project(models.Model):
     url = models.URLField(null=True, blank=True)
     tags = models.ManyToManyField(Tags, verbose_name=_("Tags"))
     image = models.ImageField(
-        upload_to="projects", null=True, blank=True, verbose_name=_("Projecto")
+        upload_to="projects", null=True, blank=True, verbose_name=_("Proyecto")
     )
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_("Usuario")
