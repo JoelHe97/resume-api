@@ -6,5 +6,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-     -  name: Delete Artifact
-        uses: GeekyEggo/delete-artifact@v2.0.0
+      - uses: actions/checkout@v2
+
+      - name: Delete Artifacts
+        uses: actions/delete-artifacts@v0.2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
