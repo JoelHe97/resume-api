@@ -1,0 +1,15 @@
+name: Delete all build artifacts
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Artifact Cleanup
+        uses: actions/delete-artifacts-action@v2
+        with:
+          log level: "error"
+          min_bytes: '0'
