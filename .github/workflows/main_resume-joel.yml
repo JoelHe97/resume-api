@@ -39,14 +39,6 @@ jobs:
           path: |
             . 
             !venv/
-            - uses: actions/checkout@v2
-
-      - name: Artifact Cleanup
-        uses: actions/delete-artifacts-action@v2
-        with:
-          log level: "error"
-          min_bytes: '0'
-
 
   deploy:
     runs-on: ubuntu-latest
