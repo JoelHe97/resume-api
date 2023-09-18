@@ -13,7 +13,6 @@ class StackSerializer(serializers.Serializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data["icon"] = get_sas(instance.icon.name)
         return data
 
 

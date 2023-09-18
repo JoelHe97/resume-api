@@ -13,5 +13,4 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data["image"] = get_sas(instance.image.name)
         return data

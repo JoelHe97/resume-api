@@ -33,7 +33,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             - birth_year
             - ((today.month, today.day) < (birth_month, birth_day))
         )
-        data["photo"] = get_sas(instance.photo.name)
         return data
 
     # def to_representation(self, instance):
@@ -49,7 +48,7 @@ class WelcomeSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["description"] = instance.profile.description
-        data["cv"] = get_sas(instance.profile.cv.name) if instance.profile.cv else None
+        data["cv"] = instance.profile.cv.url if instance.profile.cv else None
         data["short_description"] = instance.profile.short_description
         data["whatsapp"] = instance.profile.whatsapp
         data["github"] = instance.profile.github
