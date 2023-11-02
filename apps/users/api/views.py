@@ -11,6 +11,8 @@ from apps.careers.api.serializers import (
 from apps.projects.api.serializers import (
     ProjectSerializer,
 )
+from django.views.decorators.cache import cache_page
+
 from .serializers import WelcomeSerializer, AboutMeSerializer, MailSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -20,6 +22,7 @@ from django.db.models import Prefetch
 from apps.careers.models import Education
 from apps.languages.models import LanguageSkill
 from django.core.mail import send_mail
+from django.utils.decorators import method_decorator
 
 
 class MainView(APIView):
@@ -32,6 +35,10 @@ class WelcomeView(generics.RetrieveAPIView):
     serializer_class = WelcomeSerializer
     lookup_field = "username"
     lookup_url_kwarg = "username"
+
+    @method_decorator(cache_page(None, key_prefix="welcome"))
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
 class AboutMeView(generics.RetrieveAPIView):
@@ -48,6 +55,10 @@ class AboutMeView(generics.RetrieveAPIView):
     lookup_field = "username"
     lookup_url_kwarg = "username"
 
+    @method_decorator(cache_page(None, key_prefix="about"))
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
 
 class SkillView(generics.ListAPIView):
     queryset = Skill.objects.all()
@@ -55,6 +66,10 @@ class SkillView(generics.ListAPIView):
 
     def get_queryset(self):
         return super().get_queryset().filter(user__username=self.kwargs["username"])
+
+    @method_decorator(cache_page(None, key_prefix="skills"))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class JobExperiencesView(generics.ListAPIView):
@@ -64,6 +79,10 @@ class JobExperiencesView(generics.ListAPIView):
     def get_queryset(self):
         return super().get_queryset().filter(user__username=self.kwargs["username"])
 
+    @method_decorator(cache_page(None, key_prefix="experiences"))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class CertificatesView(generics.ListAPIView):
     queryset = Certificate.objects.all()
@@ -71,6 +90,10 @@ class CertificatesView(generics.ListAPIView):
 
     def get_queryset(self):
         return super().get_queryset().filter(user__username=self.kwargs["username"])
+
+    @method_decorator(cache_page(None, key_prefix="certificates"))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class ProjectsView(generics.ListAPIView):
@@ -80,8 +103,9 @@ class ProjectsView(generics.ListAPIView):
     def get_queryset(self):
         return super().get_queryset().filter(user__username=self.kwargs["username"])
 
-
-from azure.communication.email import EmailClient
+    @method_decorator(cache_page(None, key_prefix="projects"))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class SendMailView(APIView):

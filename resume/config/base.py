@@ -50,6 +50,17 @@ THIRD_APPS = [
     "storages",
 ]
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get("REDIS_SERVER"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": os.environ.get("REDIS_PASSWORD"),
+        },
+    }
+}
+
 
 def get_CORS_ALLOWED_ORIGIN():
     CORS_ALLOWED_ORIGIN_FROM_ENVIRON = os.environ.get("CORS_ALLOWED_ORIGIN")
