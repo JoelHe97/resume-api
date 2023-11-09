@@ -1,28 +1,25 @@
-from rest_framework import generics
-from apps.users.models import User
-from apps.skills.models import Skill
-from apps.skills.api.serializers import SkillSerializer
-from apps.careers.models import JobExperience, Certificate
-from apps.projects.models import Project
-from apps.careers.api.serializers import (
-    JobExperienceSerializer,
-    CertificateSerializer,
-)
-from apps.projects.api.serializers import (
-    ProjectSerializer,
-)
-from django.views.decorators.cache import cache_page
-
-from .serializers import WelcomeSerializer, AboutMeSerializer, MailSerializer
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 import os
-from django.db.models import Prefetch
-from apps.careers.models import Education
-from apps.languages.models import LanguageSkill
+
+from django.core.cache import cache
 from django.core.mail import send_mail
+from django.db.models import Prefetch
 from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from apps.careers.api.serializers import (CertificateSerializer,
+                                          JobExperienceSerializer)
+from apps.careers.models import Certificate, Education, JobExperience
+from apps.languages.models import LanguageSkill
+from apps.projects.api.serializers import ProjectSerializer
+from apps.projects.models import Project
+from apps.skills.api.serializers import SkillSerializer
+from apps.skills.models import Skill
+from apps.users.models import User
+
+from .serializers import AboutMeSerializer, MailSerializer, WelcomeSerializer
 
 
 class MainView(APIView):
@@ -36,9 +33,10 @@ class WelcomeView(generics.RetrieveAPIView):
     lookup_field = "username"
     lookup_url_kwarg = "username"
 
-    @method_decorator(cache_page(None, key_prefix="welcome"))
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+    def get_queryset(self):
+        data = super().get_queryset()
+        cache.set("welcome", data, timeout=None)
+        return cache.get("welcome")
 
 
 class AboutMeView(generics.RetrieveAPIView):
@@ -55,9 +53,13 @@ class AboutMeView(generics.RetrieveAPIView):
     lookup_field = "username"
     lookup_url_kwarg = "username"
 
-    @method_decorator(cache_page(None, key_prefix="about"))
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+    def get_queryset(self):
+        if cache.get("about"):
+            return cache.get("about")
+        else:
+            data = super().get_queryset()
+            cache.set("about", data, timeout=None)
+            return data
 
 
 class SkillView(generics.ListAPIView):
@@ -65,11 +67,12 @@ class SkillView(generics.ListAPIView):
     serializer_class = SkillSerializer
 
     def get_queryset(self):
-        return super().get_queryset().filter(user__username=self.kwargs["username"])
-
-    @method_decorator(cache_page(None, key_prefix="skills"))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        if cache.get("skills"):
+            return cache.get("skills")
+        else:
+            data = super().get_queryset().filter(user__username=self.kwargs["username"])
+            cache.set("skills", data, timeout=None)
+        return data
 
 
 class JobExperiencesView(generics.ListAPIView):
@@ -77,11 +80,12 @@ class JobExperiencesView(generics.ListAPIView):
     serializer_class = JobExperienceSerializer
 
     def get_queryset(self):
-        return super().get_queryset().filter(user__username=self.kwargs["username"])
-
-    @method_decorator(cache_page(None, key_prefix="experiences"))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        if cache.get("experiences"):
+            return cache.get("experiences")
+        else:
+            data = super().get_queryset().filter(user__username=self.kwargs["username"])
+            cache.set("experiences", data, timeout=None)
+        return data
 
 
 class CertificatesView(generics.ListAPIView):
@@ -89,11 +93,12 @@ class CertificatesView(generics.ListAPIView):
     serializer_class = CertificateSerializer
 
     def get_queryset(self):
-        return super().get_queryset().filter(user__username=self.kwargs["username"])
-
-    @method_decorator(cache_page(None, key_prefix="certificates"))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        if cache.get("certificates"):
+            return cache.get("certificates")
+        else:
+            data = super().get_queryset().filter(user__username=self.kwargs["username"])
+            cache.set("certificates ", data, timeout=None)
+        return data
 
 
 class ProjectsView(generics.ListAPIView):
@@ -101,11 +106,12 @@ class ProjectsView(generics.ListAPIView):
     serializer_class = ProjectSerializer
 
     def get_queryset(self):
-        return super().get_queryset().filter(user__username=self.kwargs["username"])
-
-    @method_decorator(cache_page(None, key_prefix="projects"))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        if cache.get("projects"):
+            return cache.get("projects")
+        else:
+            data = super().get_queryset().filter(user__username=self.kwargs["username"])
+            cache.set("projects ", data, timeout=None)
+        return data
 
 
 class SendMailView(APIView):
@@ -200,11 +206,9 @@ class AzureBlobView(APIView):
         # [START create_sas_token]
         # Create a SAS token to use to authenticate a new client
         from datetime import datetime, timedelta
-        from azure.storage.blob import (
-            ResourceTypes,
-            AccountSasPermissions,
-            generate_account_sas,
-        )
+
+        from azure.storage.blob import (AccountSasPermissions, ResourceTypes,
+                                        generate_account_sas)
 
         sas_token = generate_account_sas(
             blob_service_client.account_name,
