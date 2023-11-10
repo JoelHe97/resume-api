@@ -34,9 +34,12 @@ class WelcomeView(generics.RetrieveAPIView):
     lookup_url_kwarg = "username"
 
     def get_queryset(self):
-        data = super().get_queryset()
-        cache.set("welcome", data, timeout=None)
-        return cache.get("welcome")
+        if cache.get("welcome"):
+            return cache.get("welcome")
+        else:
+            data = super().get_queryset()
+            cache.set("welcome", data, timeout=None)
+            return data
 
 
 class AboutMeView(generics.RetrieveAPIView):
