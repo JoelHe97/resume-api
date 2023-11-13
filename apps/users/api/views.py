@@ -8,6 +8,7 @@ from django.views.decorators.cache import cache_page
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_extensions.cache.decorators import cache_response
 
 from apps.careers.api.serializers import (CertificateSerializer,
                                           JobExperienceSerializer)
@@ -33,13 +34,12 @@ class WelcomeView(generics.RetrieveAPIView):
     lookup_field = "username"
     lookup_url_kwarg = "username"
 
-    def get_queryset(self):
-        if cache.get("welcome"):
-            return cache.get("welcome")
-        else:
-            data = super().get_queryset()
-            cache.set("welcome", data, timeout=None)
-            return data
+    def calculate_key(self, view_instance, view_method, request, args, kwargs):
+        return "." + "welcome"
+
+    @cache_response(None, key_func="calculate_key")
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
 
 class AboutMeView(generics.RetrieveAPIView):
@@ -56,65 +56,60 @@ class AboutMeView(generics.RetrieveAPIView):
     lookup_field = "username"
     lookup_url_kwarg = "username"
 
-    def get_queryset(self):
-        if cache.get("about"):
-            return cache.get("about")
-        else:
-            data = super().get_queryset()
-            cache.set("about", data, timeout=None)
-            return data
+    def calculate_key(self, view_instance, view_method, request, args, kwargs):
+        return "." + "about"
+
+    @cache_response(None, key_func="calculate_key")
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
 
 class SkillView(generics.ListAPIView):
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
 
-    def get_queryset(self):
-        if cache.get("skills"):
-            return cache.get("skills")
-        else:
-            data = super().get_queryset().filter(user__username=self.kwargs["username"])
-            cache.set("skills", data, timeout=None)
-        return data
+    def calculate_key(self, view_instance, view_method, request, args, kwargs):
+        return "." + "skills"
+
+    @cache_response(None, key_func="calculate_key")
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
 class JobExperiencesView(generics.ListAPIView):
     queryset = JobExperience.objects.order_by("start_date")
     serializer_class = JobExperienceSerializer
 
-    def get_queryset(self):
-        if cache.get("experiences"):
-            return cache.get("experiences")
-        else:
-            data = super().get_queryset().filter(user__username=self.kwargs["username"])
-            cache.set("experiences", data, timeout=None)
-        return data
+    def calculate_key(self, view_instance, view_method, request, args, kwargs):
+        return "." + "experiences"
+
+    @cache_response(None, key_func="calculate_key")
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
 class CertificatesView(generics.ListAPIView):
     queryset = Certificate.objects.all()
     serializer_class = CertificateSerializer
 
-    def get_queryset(self):
-        if cache.get("certificates"):
-            return cache.get("certificates")
-        else:
-            data = super().get_queryset().filter(user__username=self.kwargs["username"])
-            cache.set("certificates ", data, timeout=None)
-        return data
+    def calculate_key(self, view_instance, view_method, request, args, kwargs):
+        return "." + "certificates"
+
+    @cache_response(None, key_func="calculate_key")
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
 class ProjectsView(generics.ListAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
-    def get_queryset(self):
-        if cache.get("projects"):
-            return cache.get("projects")
-        else:
-            data = super().get_queryset().filter(user__username=self.kwargs["username"])
-            cache.set("projects ", data, timeout=None)
-        return data
+    def calculate_key(self, view_instance, view_method, request, args, kwargs):
+        return "." + "projects"
+
+    @cache_response(None, key_func="calculate_key")
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
 class SendMailView(APIView):
