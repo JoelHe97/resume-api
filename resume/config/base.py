@@ -54,14 +54,15 @@ THIRD_APPS = [
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get("REDIS_SERVER"),
+        "LOCATION": "redis://redis-18578.c281.us-east-1-2.ec2.cloud.redislabs.com:18578",
         "TIMEOUT": None,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "PASSWORD": os.environ.get("REDIS_PASSWORD"),
+            "PASSWORD": "NlbHNoUK6yNkJ0LJjy72WIjlWS69qG9H",
         },
     }
 }
+print(CACHES["default"])
 REST_FRAMEWORK_EXTENSIONS = {
     "DEFAULT_CACHE_KEY_FUNC": "rest_framework_extensions.utils.default_cache_key_func"
 }

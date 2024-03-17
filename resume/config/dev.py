@@ -6,12 +6,12 @@ DEBUG = True
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "resume",
-        "USER": "root",
-        "PASSWORD": "",
-        "HOST": "localhost",
-        "PORT": 3306,
+        "ENGINE": os.environ.get("DB_PROD_ENGINE"),
+        "NAME": os.environ.get("DB_PROD_NAME"),
+        "HOST": os.environ.get("DB_PROD_HOST"),
+        "USER": os.environ.get("DB_PROD_USER"),
+        "PASSWORD": os.environ.get("DB_PROD_PASSWORD"),
+        "PORT": os.environ.get("DB_PROD_PORT"),
     }
 }
 
