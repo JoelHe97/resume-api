@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+from google.oauth2 import service_account
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -202,8 +203,8 @@ EMAIL_USE_TLS = True
 # STATICFILES_STORAGE = "resume.storages.custom_azure.PublicAzureStorage"
 
 # django >= 4.2
-DEFAULT_FILE_STORAGE = os.environ.get("DEFAULT_FILE_STORAGE")
-STATICFILES_STORAGE = os.environ.get("STATICFILES_STORAGE")
+DEFAULT_FILE_STORAGE ="storages.backends.gcloud.GoogleCloudStorage"
+STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 AZURE_CONTAINER = os.environ.get("AZURE_CONTAINER")
 AZURE_ACCOUNT_KEY = os.environ.get("AZURE_ACCOUNT_KEY")
@@ -220,3 +221,8 @@ AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 # s3 static settings
 AWS_LOCATION = "static"
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
+FIREBASE_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    os.path.join(BASE_DIR, os.environ.get("FIREBASE_PATH"))
+)
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.environ.get("FIREBASE_PATH")
+GS_BUCKET_NAME = 'resume-dbc68.appspot.com'
