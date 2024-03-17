@@ -222,7 +222,7 @@ AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 AWS_LOCATION = "static"
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
 FIREBASE_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, os.environ.get("FIREBASE_PATH"))
+    os.path.join(BASE_DIR, '../firebase_dev.json')
 )
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.environ.get("FIREBASE_PATH")
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "firebase_dev.json"
 GS_BUCKET_NAME = 'resume-dbc68.appspot.com'
