@@ -176,7 +176,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
-
+print(STATIC_ROOT)
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -203,8 +203,9 @@ EMAIL_USE_TLS = True
 # STATICFILES_STORAGE = "resume.storages.custom_azure.PublicAzureStorage"
 
 # django >= 4.2
-DEFAULT_FILE_STORAGE ="storages.backends.gcloud.GoogleCloudStorage"
-STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+from django.conf import settings
 
 AZURE_CONTAINER = os.environ.get("AZURE_CONTAINER")
 AZURE_ACCOUNT_KEY = os.environ.get("AZURE_ACCOUNT_KEY")
@@ -214,15 +215,19 @@ AWS_S3_ACCESS_KEY_ID = os.environ.get("AWS_S3_ACCESS_KEY_ID")
 AWS_S3_SECRET_ACCESS_KEY = os.environ.get("AWS_S3_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
 
-CKEDITOR_BASEPATH = os.environ.get("CKEDITOR_BASEPATH")
 AWS_DEFAULT_ACL = "public-read"
 AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 # s3 static settings
 AWS_LOCATION = "static"
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
-FIREBASE_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, '../firebase_dev.json')
-)
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "firebase_dev.json"
-GS_BUCKET_NAME = 'resume-dbc68.appspot.com'
+from .secret import access_secret_version, secret_hash
+
+value =access_secret_version("firebase",version_id=1)
+
+with open("firebase_credentials.json", "w") as f:
+    f.write(value)
+
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] =  "firebase_credentials.json"
+GS_BUCKET_NAME = "resume-dbc68.appspot.com"

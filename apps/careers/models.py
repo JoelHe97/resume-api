@@ -1,7 +1,8 @@
+from ckeditor.fields import RichTextField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
 from apps.users.models import User
-from ckeditor.fields import RichTextField
 
 
 class Tags(models.Model):
@@ -22,7 +23,7 @@ class JobExperience(models.Model):
     position = models.CharField(
         null=False, blank=False, max_length=150, verbose_name=_("Posición")
     )
-    description = RichTextField()
+    description = models.TextField()
     start_date = models.DateField(
         null=False, blank=False, verbose_name=_("Fecha de inicio")
     )

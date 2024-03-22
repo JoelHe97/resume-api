@@ -6,7 +6,7 @@ DEBUG = True
 
 DATABASES = {
     "default": {
-        "ENGINE": os.environ.get("DB_PROD_ENGINE"),
+        "ENGINE": "django.db.backends.mysql",
         "NAME": os.environ.get("DB_PROD_NAME"),
         "HOST": os.environ.get("DB_PROD_HOST"),
         "USER": os.environ.get("DB_PROD_USER"),
