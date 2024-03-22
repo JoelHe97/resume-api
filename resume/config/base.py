@@ -54,18 +54,16 @@ THIRD_APPS = [
 
 CACHES = {
     "default": {
-        'BACKEND': 'django_redis.cache.RedisCache',
+        "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://redis-18578.c281.us-east-1-2.ec2.cloud.redislabs.com:18578",
         "TIMEOUT": None,
         "OPTIONS": {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "PASSWORD": "NlbHNoUK6yNkJ0LJjy72WIjlWS69qG9H",
-
         },
     }
 }
 print(CACHES["default"])
-
 
 
 def get_CORS_ALLOWED_ORIGIN():
@@ -222,11 +220,13 @@ AWS_LOCATION = "static"
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
 from .secret import access_secret_version, get_credentials_from_token
 
-value =access_secret_version("firebase",version_id=1)
+value = access_secret_version("firebase", version_id=1)
 
 
 import json
 
-credentials_secret = access_secret_version("firebase",version_id=1)
+credentials_secret = access_secret_version("firebase", version_id=1)
 creds = get_credentials_from_token(credentials_secret)
+
 GS_BUCKET_NAME = "resume-dbc68.appspot.com"
+GOOGLE_APPLICATION_CREDENTIALS = creds
