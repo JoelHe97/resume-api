@@ -54,19 +54,18 @@ THIRD_APPS = [
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
+        'BACKEND': 'django_redis.cache.RedisCache',
         "LOCATION": "redis://redis-18578.c281.us-east-1-2.ec2.cloud.redislabs.com:18578",
         "TIMEOUT": None,
         "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
             "PASSWORD": "NlbHNoUK6yNkJ0LJjy72WIjlWS69qG9H",
+
         },
     }
 }
 print(CACHES["default"])
-REST_FRAMEWORK_EXTENSIONS = {
-    "DEFAULT_CACHE_KEY_FUNC": "rest_framework_extensions.utils.default_cache_key_func"
-}
+
 
 
 def get_CORS_ALLOWED_ORIGIN():
@@ -221,13 +220,13 @@ AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 # s3 static settings
 AWS_LOCATION = "static"
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
-from .secret import access_secret_version, secret_hash
+from .secret import access_secret_version, get_credentials_from_token
 
 value =access_secret_version("firebase",version_id=1)
 
-with open("firebase_credentials.json", "w") as f:
-    f.write(value)
 
+import json
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] =  "firebase_credentials.json"
+credentials_secret = access_secret_version("firebase",version_id=1)
+creds = get_credentials_from_token(credentials_secret)
 GS_BUCKET_NAME = "resume-dbc68.appspot.com"

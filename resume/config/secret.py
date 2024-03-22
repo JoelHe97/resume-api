@@ -1,5 +1,6 @@
 # Import the Secret Manager client library.
 from google.cloud import secretmanager
+from google.oauth2.service_account import Credentials
 
 
 def access_secret_version(secret_id, version_id="latest"):
@@ -14,9 +15,11 @@ def access_secret_version(secret_id, version_id="latest"):
     # Return the decoded payload.
     return response.payload.data.decode('UTF-8')
     
-import hashlib
+import json
 
 
-def secret_hash(secret_value): 
-  # return the sha224 hash of the secret value
-  return hashlib.sha224(bytes(secret_value, "utf-8")).hexdigest()
+def get_credentials_from_token(secret_payload:str)->Credentials:
+    """Given an authentication token, return a Credentials object"""
+    
+    credential_dict = json.loads(secret_payload)
+    return Credentials.from_service_account_info(credential_dict)
