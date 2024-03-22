@@ -218,15 +218,9 @@ AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 # s3 static settings
 AWS_LOCATION = "static"
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
-from .secret import access_secret_version, get_credentials_from_token
-
-value = access_secret_version("firebase", version_id=1)
-
-
-import json
-
-credentials_secret = access_secret_version("firebase", version_id=1)
-creds = get_credentials_from_token(credentials_secret)
+FIREBASE_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    os.path.join(BASE_DIR, '../firebase.json')
+)
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "firebase.json"
 
 GS_BUCKET_NAME = "resume-dbc68.appspot.com"
-GOOGLE_APPLICATION_CREDENTIALS = creds
